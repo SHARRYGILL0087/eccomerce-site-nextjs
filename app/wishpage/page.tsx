@@ -18,7 +18,7 @@ interface ProductData {
     isWishList: boolean;
 }
 
-const page = () => {
+const WishPage = () => {
     const states = useContext(GlobalStates)
     const [wishPro, setWishPro] = states.wishPros
 
@@ -62,4 +62,4 @@ const page = () => {
     )
 }
 
-export default page
+export default WishPage
