@@ -5,7 +5,7 @@ const getCart = async (ele: string, val: string) => {
 
   try {
 
-    const res = await axios.post('http://localhost:3000/api/products/getCart', { ele: ele, name: val })
+    const res = await axios.post('/api/products/getCart', { ele: ele, name: val })
 
     // console.log(res.data)
 

@@ -28,7 +28,7 @@ const Login = () => {
     const handleSubmit = async (e: React.InputEvent<HTMLFormElement>) => {
         e.preventDefault()
         try {
-            const res = await axios.post('http://localhost:3000/api/login', dataForm)
+            const res = await axios.post('/api/login', dataForm)
             // console.log(res.data)
             // console.log(res.data.refreshtoken)
             localStorage.setItem("refreshtoken",res.data.refreshtoken)

@@ -28,7 +28,7 @@ const SignUp = () => {
     const handleSubmit = async (e: React.InputEvent<HTMLFormElement>) => {
         e.preventDefault()
         try {
-            const res = await axios.post('http://localhost:3000/api/signin', dataForm)
+            const res = await axios.post('/api/signin', dataForm)
             // console.log(res.data)
             localStorage.setItem("accesstoken",res.data.accesstoken)
             setIsLogin(true)

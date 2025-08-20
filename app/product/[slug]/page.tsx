@@ -23,7 +23,7 @@ interface ProductData {
     isWishList: boolean;
 }
 
-const Product = ({ params }: ProductProps) => {
+export default function Product({ params }: ProductProps) {
     const router = useRouter()
     const [product, setProduct] = useState<ProductData | undefined>(undefined)
 
@@ -32,7 +32,7 @@ const Product = ({ params }: ProductProps) => {
 
     const getProduct = async () => {
         try {
-            const res = await axios.post('http://localhost:3000/api/products/get', { id: slug })
+            const res = await axios.post('/api/products/get', { id: slug })
             console.log(res.data)
             setProduct(res.data)
 
@@ -44,11 +44,11 @@ const Product = ({ params }: ProductProps) => {
 
     useEffect(() => {
         getProduct()
-    }, [])
+    }, [slug])
 
     const handleAddCart = async () => {
         try {
-            const res = await axios.put('http://localhost:3000/api/products/addCart', { id: product?._id, ele: 'isCart' })
+            const res = await axios.put('/api/products/addCart', { id: product?._id, ele: 'isCart' })
             console.log(res.data)
             router.push('/cartpage')
         } catch (error: unknown) {
@@ -61,7 +61,7 @@ const Product = ({ params }: ProductProps) => {
 
     const handleAddWishList = async () => {
         try {
-            const res = await axios.put('http://localhost:3000/api/products/addCart', { id: product?._id, ele: 'isWishList' })
+            const res = await axios.put('/api/products/addCart', { id: product?._id, ele: 'isWishList' })
             console.log(res.data)
         } catch (error: unknown) {
             if (error instanceof Error)
@@ -131,5 +131,3 @@ const Product = ({ params }: ProductProps) => {
         </div >
     )
 }
-
-export default Product
