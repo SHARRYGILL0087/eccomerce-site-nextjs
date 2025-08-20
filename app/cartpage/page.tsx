@@ -5,7 +5,7 @@ import getCart from '../data/getCart'
 import { GlobalStates } from '../context/GlobalStates'
 import Link from 'next/link'
 
-const page = () => {
+const CartPage = () => {
   interface ProductData {
     _id: string;
     name: string;
@@ -95,4 +95,4 @@ const page = () => {
   )
 }
 
-export default page
+export default CartPage

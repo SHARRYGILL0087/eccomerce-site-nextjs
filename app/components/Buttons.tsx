@@ -13,11 +13,11 @@ const Buttons = () => {
       <span className="absolute left-0 -bottom-1 h-0.5 w-full origin-left scale-x-0 bg-orange-400 transition-transform duration-300 group-hover:scale-x-100"></span>
       </Link>
       <Link href='/' className='relative inline-block cursor-pointer group'>
-      <span className=' hover:text-orange-400 text-gray-800 font-semibold text-sm transition-all duration-300'>MEN'S</span>
+      <span className=' hover:text-orange-400 text-gray-800 font-semibold text-sm transition-all duration-300'>{`MEN'S`}</span>
       <span className="absolute left-0 -bottom-1 h-0.5 w-full origin-left scale-x-0 bg-orange-400 transition-transform duration-300 group-hover:scale-x-100"></span>
       </Link>
       <Link href='/' className='relative inline-block cursor-pointer group'>
-      <span className=' hover:text-orange-400 text-gray-800 font-semibold text-sm transition-all duration-300'>WOMEN'S</span>
+      <span className=' hover:text-orange-400 text-gray-800 font-semibold text-sm transition-all duration-300'>{`WOMEN'S`}</span>
       <span className="absolute left-0 -bottom-1 h-0.5 w-full origin-left scale-x-0 bg-orange-400 transition-transform duration-300 group-hover:scale-x-100"></span>
       </Link>
       <Link href='/' className='relative inline-block cursor-pointer group'>
