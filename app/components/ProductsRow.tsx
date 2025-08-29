@@ -1,99 +1,65 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import axios from 'axios'
+import Link from 'next/link';
 
-const ProductsRow = () => {
+
+interface ProductsRowProps {
+    title?: string
+}
+
+interface ProductData {
+    _id: string;
+    name: string;
+    description: string;
+    price: number;
+    category: string;
+    brand: string;
+    images: string;
+    stock: number;
+    isCart: boolean;
+    isWishList: boolean;
+}
+
+const ProductsRow = ({ title }: ProductsRowProps) => {
+    const [Pros, setPros] = useState<ProductData[]>([])
+
+    const getPro = async () => {
+        const res = await axios.post('http://localhost:3000/api/products/get', { category: title?.toLocaleLowerCase() })
+        // console.log(res.data)
+        setPros(res.data)
+    }
+
+
+    useEffect(() => {
+        getPro()
+    }, [])
+
     return (
         <div className='bg-white p-3 my-4'>
-            <h1 className='font-semibold text-slate-800 my-3 text-xl'>HOME</h1>
+            <h1 className='font-semibold text-slate-800 my-5 text-2xl'>{title}</h1>
             <div className='grid lg:grid-cols-8 md:grid-cols-5 sm:grid-cols-4 grid-cols-2 gap-5'>
-                <div className='flex flex-col items-center justify-center'>
-                    <Image
-                        src="/proImgs/pro1.png"
-                        alt="Logo"
-                        width={150}
-                        height={150}
-                        className='cursor-pointer w-[150px] h-[150px]'
-                    />
-                    <h3 className='font-medium'>Water Bottles</h3>
-                    <span>From $300</span>
-                </div>
-                <div className='flex flex-col items-center justify-center'>
-                    <Image
-                        src="/proImgs/pro2.png"
-                        alt="Logo"
-                        width={150}
-                        height={150}
-                        className='cursor-pointer w-[150px] h-[150px]'
-                    />
-                    <h3 className='font-medium'>Water Bottles</h3>
-                    <span>From $300</span>
-                </div>
-                <div className='flex flex-col items-center justify-center'>
-                    <Image
-                        src="/proImgs/pro3.png"
-                        alt="Logo"
-                        width={150}
-                        height={150}
-                        className='cursor-pointer w-[150px] h-[150px]'
-                    />
-                    <h3 className='font-medium'>Water Bottles</h3>
-                    <span>From $300</span>
-                </div>
-                <div className='flex flex-col items-center justify-center'>
-                    <Image
-                        src="/proImgs/pro4.png"
-                        alt="Logo"
-                        width={150}
-                        height={150}
-                        className='cursor-pointer w-[150px] h-[150px]'
-                    />
-                    <h3 className='font-medium'>Water Bottles</h3>
-                    <span>From $300</span>
-                </div>
-                <div className='flex flex-col items-center justify-center'>
-                    <Image
-                        src="/proImgs/pro5.png"
-                        alt="Logo"
-                        width={150}
-                        height={150}
-                        className='cursor-pointer w-[150px] h-[150px]'
-                    />
-                    <h3 className='font-medium'>Water Bottles</h3>
-                    <span>From $300</span>
-                </div>
-                <div className='flex flex-col items-center justify-center'>
-                    <Image
-                        src="/proImgs/pro6.png"
-                        alt="Logo"
-                        width={150}
-                        height={150}
-                        className='cursor-pointer w-[150px] h-[150px]'
-                    />
-                    <h3 className='font-medium'>Water Bottles</h3>
-                    <span>From $300</span>
-                </div>
-                <div className='flex flex-col items-center justify-center'>
-                    <Image
-                        src="/proImgs/pro7.png"
-                        alt="Logo"
-                        width={150}
-                        height={150}
-                        className='cursor-pointer w-[150px] h-[150px]'
-                    />
-                    <h3 className='font-medium'>Water Bottles</h3>
-                    <span>From $300</span>
-                </div>
-                <div className='flex flex-col items-center justify-center'>
-                    <Image
-                        src="/proImgs/pro8.png"
-                        alt="Logo"
-                        width={150}
-                        height={150}
-                        className='cursor-pointer w-[150px] h-[150px]'
-                    />
-                    <h3 className='font-medium'>Water Bottles</h3>
-                    <span>From $300</span>
-                </div>
+
+                {
+                    Pros?.map((item: ProductData) => {
+                        return (
+                            <Link key={item._id}  href={`/product/${item?._id}`} className='flex flex-col items-center justify-center'>
+                                <Image
+                                    src={item.images}
+                                    alt="Logo"
+                                    width={150}
+                                    height={150}
+                                    className='cursor-pointer w-[150px] h-[150px]'
+                                />
+                                <h3 className='font-medium'>{item.name}</h3>
+                                <span>From {item.price}</span>
+                            </Link>
+                        )
+                    })
+                }
+
+
+
             </div>
 
         </div>

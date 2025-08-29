@@ -19,6 +19,16 @@ interface ProductData {
     isWishList: boolean;
 }
 
+interface IUser {
+    _id?: string;    
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
 interface GlobalStatesType {
     cartPros: [ProductData[], React.Dispatch<React.SetStateAction<ProductData[]>>];
     wishPros: [ProductData[], React.Dispatch<React.SetStateAction<ProductData[]>>];
@@ -27,6 +37,7 @@ interface GlobalStatesType {
     refreshCart: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
     refreshWish: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
     isLogin: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+    user: [IUser | null,React.Dispatch<React.SetStateAction<IUser | null>>]
 }
 
 export const GlobalStates = createContext<GlobalStatesType>({
@@ -37,6 +48,7 @@ export const GlobalStates = createContext<GlobalStatesType>({
     refreshCart: [false, () => { }],
     refreshWish: [false, () => { }],
     isLogin: [false, () => { }],
+    user: [null, () => { }]
 
 })
 
@@ -53,18 +65,14 @@ const DataProvider = ({ children }: DataProviderProps) => {
     const [wishPro, setWishPro] = useState<ProductData[]>([])
     const [wishSize, setWishSize] = useState<number>(0)
     const [cartSize, setCartSize] = useState<number>(0)
-    const [user, setuser] = useState(null)
+    const [user, setUser] = useState<IUser | null>(null)
     const [refreshCart, setRefreshCart] = useState<boolean>(false)
     const [refreshWish, setRefreshWish] = useState<boolean>(false)
     const [isLogin, setIsLogin] = useState<boolean>(false)
 
-    // console.log(user)
-    // console.log(isLogin)
 
     const fetchPro = async (key: string, val: string): Promise<ProductData[]> => {
         const data = await getCart(key, val)
-        // setCartPro(data.res)
-        // setCartSize(data.res.length)
         return data.res
     }
 
@@ -79,7 +87,7 @@ const DataProvider = ({ children }: DataProviderProps) => {
             // console.log('rf_token res ->',res.data.userId)
             const usr = await axios.post('http://localhost:3000/api/user', { id: res?.data?.userId })
             // console.log(usr.data.User)
-            setuser(usr.data.User)
+            setUser(usr.data.User)
             setIsLogin(true)
 
         } catch (error: unknown) {
@@ -105,7 +113,7 @@ const DataProvider = ({ children }: DataProviderProps) => {
 
     useEffect(() => {
         fetchPro('isWishList', 'true').then(pros => {
-            console.log('Pros', pros)
+            // console.log('Pros', pros)
             setWishPro(pros)
             setWishSize(pros.length)
         })
@@ -123,7 +131,8 @@ const DataProvider = ({ children }: DataProviderProps) => {
         wishSize: [wishSize, setWishSize],
         refreshCart: [refreshCart, setRefreshCart],
         refreshWish: [refreshWish, setRefreshWish],
-        isLogin: [isLogin, setIsLogin]
+        isLogin: [isLogin, setIsLogin],
+        user: [user, setUser]
     }
 
     return (

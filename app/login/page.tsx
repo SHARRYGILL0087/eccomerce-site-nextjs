@@ -5,6 +5,8 @@ import Image from 'next/image'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { GlobalStates } from '../context/GlobalStates'
+import { toast } from 'react-toastify'
+
 
 const Login = () => {
     const states = useContext(GlobalStates)
@@ -31,10 +33,20 @@ const Login = () => {
             const res = await axios.post('/api/login', dataForm)
             // console.log(res.data)
             // console.log(res.data.refreshtoken)
-            localStorage.setItem("refreshtoken",res.data.refreshtoken)
+            localStorage.setItem("refreshtoken", res.data.refreshtoken)
             setIsLogin(true)
             setDataForm({ email: '', password: '' })
-            router.push('/')            
+            toast('Login Successfully !', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
+            router.push('/')
         } catch (error: unknown) {
             if (error instanceof Error) {
                 console.log('Error while login', error.message)

@@ -5,6 +5,7 @@ import Image from 'next/image'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { GlobalStates } from '../context/GlobalStates'
+import { toast } from 'react-toastify'
 
 const SignUp = () => {
     const states = useContext(GlobalStates)
@@ -30,9 +31,19 @@ const SignUp = () => {
         try {
             const res = await axios.post('/api/signin', dataForm)
             // console.log(res.data)
-            localStorage.setItem("accesstoken",res.data.accesstoken)
+            localStorage.setItem("accesstoken", res.data.accesstoken)
             setIsLogin(true)
             setDataForm({ firstname: '', lastname: '', email: '', password: '' })
+            toast('SignUp Successfully !', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
             router.push('/')
         } catch (error: unknown) {
             if (error instanceof Error) {

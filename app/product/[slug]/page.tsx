@@ -1,8 +1,16 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Image from 'next/image'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { GlobalStates } from '@/app/context/GlobalStates'
+import { toast } from 'react-toastify'
+
+declare global {
+    interface Window {
+        Razorpay: any
+    }
+}
 
 interface ProductProps {
     params: {
@@ -24,16 +32,22 @@ interface ProductData {
 }
 
 export default function Product({ params }: ProductProps) {
+    const states = useContext(GlobalStates)
+    const [user, setUser] = states.user
     const router = useRouter()
     const [product, setProduct] = useState<ProductData | undefined>(undefined)
-
+    const [refreshCart, setRefreshCart] = states.refreshCart
+    const [refreshWish, setRefreshWish] = states.refreshWish
+    const [isLogin, setIsLogin] = states.isLogin
 
     const { slug } = params
+
+    // console.log('Prouser' , user?._id)
 
     const getProduct = async () => {
         try {
             const res = await axios.post('/api/products/get', { id: slug })
-            console.log(res.data)
+            // console.log(res.data)
             setProduct(res.data)
 
         } catch (error) {
@@ -49,7 +63,18 @@ export default function Product({ params }: ProductProps) {
     const handleAddCart = async () => {
         try {
             const res = await axios.put('/api/products/addCart', { id: product?._id, ele: 'isCart' })
-            console.log(res.data)
+            // console.log(res.data)
+            setRefreshCart(!refreshCart)
+            toast('Product added to cart !', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
             router.push('/cartpage')
         } catch (error: unknown) {
             if (error instanceof Error)
@@ -62,7 +87,18 @@ export default function Product({ params }: ProductProps) {
     const handleAddWishList = async () => {
         try {
             const res = await axios.put('/api/products/addCart', { id: product?._id, ele: 'isWishList' })
-            console.log(res.data)
+            // console.log(res.data)
+            toast('Product added to WishList !', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            })
+            setRefreshWish(!refreshWish)
         } catch (error: unknown) {
             if (error instanceof Error)
                 console.log({ msg: 'Error while adding Cart' }, error)
@@ -71,11 +107,67 @@ export default function Product({ params }: ProductProps) {
         }
     }
 
+    const handlePayment = async () => {
+        try {
+
+            if (!isLogin) {
+                router.push('/login')
+                return;
+            }
+
+            if (typeof window.Razorpay === 'undefined') {
+                alert('Payment system is loading, please try again in a moment');
+                return;
+            }
+
+
+            const { data } = await axios.post("/api/payment", {
+                amount: 500,
+                currency: "INR",
+            })
+
+
+            const { order, key } = data
+
+            // 2️⃣ Setup Razorpay options
+            const options = {
+                key: key, // only public key is exposed here
+                amount: order.amount,
+                currency: order.currency,
+                name: "My Ecommerce Store",
+                description: "Order Payment",
+                order_id: order.id,
+                handler: function (response: any) {
+                    alert("Payment successful!");
+                    console.log("Payment response:", response);
+
+                    // Ideally send response to backend for verification
+                    // axios.post("/api/verify-payment", response)
+                },
+                prefill: {
+                    name: "Customer Name",
+                    email: "customer@example.com",
+                    contact: "9999999999",
+                },
+                theme: {
+                    color: "#3399cc",
+                },
+            };
+
+            // 3️⃣ Open Razorpay Checkout
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+
+        } catch (err) {
+            console.error("Payment initiation failed:", err);
+        }
+    }
+
 
 
 
     return (
-        <div className='min-h-screen flex md:flex-row flex-col mt-3'>
+        <div className='min-h-screen flex items-center md:flex-row flex-col mt-1'>
             <div className='md:w-1/2 w-full h-full flex gap-1.5'>
                 <div className='w-[20%]'></div>
                 <div className='sm:w-[80%] w-full h-[94%] flex justify-center items-center'>
@@ -84,7 +176,7 @@ export default function Product({ params }: ProductProps) {
                         alt={product?.name || "Product Image"}
                         width={400}
                         height={400}
-                        className='cursor-pointer object-contain max-h-[400px] '
+                        className='cursor-pointer object-contain max-h-[400px]  '
                     />
                 </div>
             </div>
@@ -122,7 +214,7 @@ export default function Product({ params }: ProductProps) {
 
                             <div className='flex flex-col gap-3 w-full mt-4'>
                                 <button onClick={handleAddCart} className='bg-yellow-400 px-5 py-1.5 rounded-2xl cursor-pointer w-1/2 font-medium text-lg'>Add to Cart</button>
-                                <button className='bg-orange-400 px-5 py-1.5 rounded-2xl cursor-pointer w-1/2 font-medium text-lg'>Buy Now</button>
+                                <button onClick={handlePayment} className='bg-orange-400 px-5 py-1.5 rounded-2xl cursor-pointer w-1/2 font-medium text-lg'>Buy Now</button>
                             </div>
                         </div>
                     </div>

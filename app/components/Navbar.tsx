@@ -3,10 +3,13 @@ import React, { useContext, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { GlobalStates } from '../context/GlobalStates'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 const Navbar = () => {
     const [searchText, setSearchText] = useState('')
     const states = useContext(GlobalStates)
+    const router = useRouter()
     const [cartSize, setcartSize] = states.cartSize
     const [wishSize, setWishSize] = states.wishSize
     const [isLogin, setIsLogin] = states.isLogin
@@ -18,21 +21,39 @@ const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('refreshtoken')
+        toast('Logout Successfully !', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        })
         setIsLogin(false)
     }
 
     const handleSearch = () => {
-        console.log(searchText)
+        const query = searchText.trim()
+        if (!query) return
+        router.push(`/search?q=${encodeURIComponent(query)}`)
         setSearchText('')
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSearch()
+        }
     }
 
     return (
         <nav className='flex justify-between items-center container sm:mx-auto  gap-1.5 mx-1 my-4 w-[85vw] bg-white'>
-            <Link href={'/'} className='font-extrabold tracking-wider'>
+            <Link href={'/'} className='font-extrabold tracking-wider text-2xl bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300'>
                 Shopverse
             </Link>
             <div className='relative'>
-                <input onChange={handleChange} type="text" value={searchText} placeholder='Search Product...' className='placeholder:text-gray-500 placeholder:text-sm outline-0 pl-3 py-1.5 border-2 border-orange-400 rounded-lg w-[50vw] focus:border-gray-700 text-gray-600 placeholder:w-[80%] sm:block hidden' />
+                <input onChange={handleChange} onKeyDown={handleKeyDown} type="text" value={searchText} placeholder='Search Product...' className='placeholder:text-gray-500 placeholder:text-sm outline-0 pl-3 py-1.5 border-2 border-orange-400 rounded-lg w-[50vw] focus:border-gray-700 text-gray-600 placeholder:w-[80%] sm:block hidden' />
                 <Image
                     onClick={handleSearch}
                     src="/search.png"
@@ -53,9 +74,9 @@ const Navbar = () => {
                 />
             </div>
             <div className={`${showSrchBar ? 'block' : 'hidden'} w-full absolute z-50 bg-white h-[100px] pt-6 `}>
-                <span onClick={()=> setshowSrchBar(false)} className='absolute right-3 font-bold cursor-pointer top-2'>x</span>
+                <span onClick={() => setshowSrchBar(false)} className='absolute right-3 font-bold cursor-pointer top-2'>x</span>
                 <div className='relative'>
-                    <input onChange={handleChange} type="text" value={searchText} placeholder='Search Product...' className='placeholder:text-gray-500 placeholder:text-sm outline-0 pl-3 py-1.5 border-2 border-orange-400 rounded-lg w-[90vw] focus:border-gray-700 text-gray-600 mx-2' />
+                    <input onChange={handleChange} onKeyDown={handleKeyDown} type="text" value={searchText} placeholder='Search Product...' className='placeholder:text-gray-500 placeholder:text-sm outline-0 pl-3 py-1.5 border-2 border-orange-400 rounded-lg w-[90vw] focus:border-gray-700 text-gray-600 mx-2' />
                     <Image
                         onClick={handleSearch}
                         src="/search.png"

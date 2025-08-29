@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import DataProvider from "./context/GlobalStates";
+import { ToastContainer } from 'react-toastify';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,9 +32,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <DataProvider>
+          <ToastContainer />
           <Navbar />
           {children}
           <Footer />
+          <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         </DataProvider>
       </body>
     </html>

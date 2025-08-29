@@ -47,9 +47,9 @@ export default function Home() {
           <div>
             <OfferCard />
           </div>
-          <CategoriesOptions />
-          <ProductsRow />
-          <ProductsRow />
+          {/* <CategoriesOptions /> */}
+          <ProductsRow title='Electronics' />
+          <ProductsRow title='Kids' />
           <div className="bg-white mx-2 pt-6 md:px-2 px-1">
             <h1 className="mb-5 font-bold text-3xl pl-12">Product For You</h1>
             <div className="grid lg:grid-cols-5 md:grid-cols-3  sm:grid-cols-2   grid-cols-1 container mx-auto sm:mx-12">
